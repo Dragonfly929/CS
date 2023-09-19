@@ -60,7 +60,7 @@ public class Main {
         String message = scanner.nextLine().toUpperCase().replaceAll(" ", "");
 
         if (!message.matches("^[A-Z]+$")) {
-            System.out.println("The message should only contain uppercase letters A-Z.");
+            System.out.println("The message should only contain letters A-Z.");
             return;
         }
 
@@ -76,14 +76,14 @@ public class Main {
     }
 
     public static void performTwoKeyCaesarCipher(Scanner scanner) {
-        System.out.print("Enter operation (encrypt, decrypt, or exit to quit): ");
+        System.out.print("Enter operation (e for encrypt, d for decrypt, or q to quit): ");
         String operation = scanner.nextLine().trim().toLowerCase();
 
-        if ("exit".equals(operation)) {
+        if ("q".equals(operation)) {
             System.out.println("Exiting the program. Goodbye!");
             return;
-        } else if (!operation.equals("encrypt") && !operation.equals("decrypt")) {
-            System.out.println("Invalid operation. Please enter encrypt, decrypt, or exit to quit.");
+        } else if (!operation.equals("e") && !operation.equals("d")) {
+            System.out.println("Invalid operation. Please enter e for encrypt, d for decrypt, or q to quit.");
             return;
         }
 
@@ -112,7 +112,14 @@ public class Main {
 
         System.out.print("Enter message: ");
         String message = scanner.nextLine();
-        String result = CaesarCipher_2key.caesarCipher(message, key1, key2, operation);
+        String result = "";
+
+        if (operation.equals("e")) {
+            result = CaesarCipher_2key.caesarCipher(message, key1, key2, "encrypt");
+        } else if (operation.equals("d")) {
+            result = CaesarCipher_2key.caesarCipher(message, key1, key2, "decrypt");
+        }
+
         System.out.println("Result: " + result);
     }
 
@@ -120,8 +127,10 @@ public class Main {
         StringBuilder encryptedText = new StringBuilder();
 
         for (char c : message.toCharArray()) {
-            int charValue = c - 'A';
-            char encryptedChar = (char) (((charValue + key) % 26) + 'A');
+            char encryptedChar = (char) (c + key);
+            if (encryptedChar > 'Z') {
+                encryptedChar = (char) (encryptedChar - 26);
+            }
             encryptedText.append(encryptedChar);
         }
 
@@ -132,8 +141,10 @@ public class Main {
         StringBuilder decryptedText = new StringBuilder();
 
         for (char c : message.toCharArray()) {
-            int charValue = c - 'A';
-            char decryptedChar = (char) (((charValue - key + 26) % 26) + 'A');
+            char decryptedChar = (char) (c - key);
+            if (decryptedChar < 'A') {
+                decryptedChar = (char) (decryptedChar + 26);
+            }
             decryptedText.append(decryptedChar);
         }
 
