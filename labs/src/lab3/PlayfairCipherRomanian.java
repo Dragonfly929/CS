@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PlayfairCipherRomanian {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÎÂĂȘȚ";
-    private static final String REPLACEMENTS = "ÎÂĂȘȚ";
-    private static final String REPLACEMENT_MAPPING = "IABST";
-
+//    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÎÂĂȘȚ";
+    private static final String ALPHABET = "AĂÂBCDEFGHIÎJKLMNOPQRSȘTȚUVWXYZ";
+//    private static final String REPLACEMENTS = "ÎÂĂȘȚ";
+//    private static final String REPLACEMENT_MAPPING = "IABST";
+    private static final String REPLACEMENTS = "ĂÂÎȘȚ";
+    private static final String REPLACEMENT_MAPPING = "AXIST";
     private String key;
     private char[][] matrix;
 
@@ -180,32 +182,60 @@ public class PlayfairCipherRomanian {
             System.out.println("Enter a key (at least 7 characters): ");
             String key = scanner.nextLine();
 
-            try {
-                PlayfairCipherRomanian cipher = new PlayfairCipherRomanian(key);
+            if (!key.matches("^[a-zăâîșțA-ZĂÂÎȘȚ]+$") || key.length() < 7) {
+                System.out.println("Invalid key. The key must be at least 7 characters and contain only letters.");
+            } else {
+                try {
+                    PlayfairCipherRomanian cipher = new PlayfairCipherRomanian(key);
 
-                System.out.println("Choose operation (1 for encryption, 2 for decryption): ");
-                String operationStr = scanner.nextLine();
-                int operation = Integer.parseInt(operationStr);
+                    System.out.println("Choose operation (1 for encryption, 2 for decryption): ");
+                    String operationStr = scanner.nextLine();
 
-                if (operation == 1) {
-                    System.out.println("Enter a message to encrypt: ");
-                    String message = scanner.nextLine();
-                    String encryptedMessage = cipher.encrypt(message);
-                    System.out.println("Encrypted message: " + encryptedMessage);
-                } else if (operation == 2) {
-                    System.out.println("Enter a ciphertext to decrypt: ");
-                    String encryptedMessage = scanner.nextLine();
-                    String decryptedMessage = cipher.decrypt(encryptedMessage);
-                    System.out.println("Decrypted message: " + decryptedMessage);
-                } else {
-                    System.out.println("Invalid operation choice. Please select 1 for encryption or 2 for decryption.");
+                    if (!operationStr.matches("^[12]$")) {
+                        System.out.println("Invalid operation choice. Please enter 1 for encryption or 2 for decryption.");
+                        continue;
+                    }
+
+                    int operation = Integer.parseInt(operationStr);
+
+                    if (operation == 1) {
+                        System.out.println("Enter a message to encrypt: ");
+                        String message = scanner.nextLine();
+
+                        if (!message.matches("^[a-zăâîșțA-ZĂÂÎȘȚ]+$")) {
+                            System.out.println("Invalid message. The message must contain only letters.");
+                            continue;
+                        }
+
+                        String encryptedMessage = cipher.encrypt(message);
+                        System.out.println("Encrypted message: " + encryptedMessage);
+                    } else if (operation == 2) {
+                        System.out.println("Enter a ciphertext to decrypt: ");
+                        String encryptedMessage = scanner.nextLine();
+
+                        if (!encryptedMessage.matches("^[a-zăâîșțA-ZĂÂÎȘȚ]+$")) {
+                            System.out.println("Invalid ciphertext. The ciphertext must contain only letters.");
+                            continue;
+                        }
+
+                        String decryptedMessage = cipher.decrypt(encryptedMessage);
+                        System.out.println("Decrypted message: " + decryptedMessage);
+                    } else {
+                        System.out.println("Invalid operation choice. Please enter 1 for encryption or 2 for decryption.");
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
             }
 
             System.out.println("Do you want to perform another operation? (1 for yes, 0 for no): ");
             String choiceStr = scanner.nextLine();
+
+            if (!choiceStr.matches("^[01]$")) {
+                System.out.println("Invalid choice. Please enter 1 for yes or 0 for no.");
+                continue;
+            }
+
             int choice = Integer.parseInt(choiceStr);
 
             if (choice != 1) {
